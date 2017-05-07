@@ -26,7 +26,6 @@ def run():
     last_term = m['terms'][-1]
     if last_term['type'] != 'sen':
       state = last_term['state']
-
       full_district = "%s%02d" % (state, int(last_term['district']))
       by_district[full_district] = m
 
@@ -64,6 +63,9 @@ def run():
         continue
 
       district = str(cells[0].text_content())
+      if not district.isdigit():
+          district = 0
+
       if district == "At Large":
         district = 0
 
@@ -86,6 +88,7 @@ def run():
 
       if state == "AQ":
         state = "AS"
+      print(district)
       full_district = "%s%02d" % (state, int(district))
       if full_district in by_district:
         print("[%s] %s" % (full_district, url))

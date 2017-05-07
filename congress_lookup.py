@@ -23,6 +23,14 @@ else:
     from urllib2 import urlopen
     import urlparse
 
+try:
+    from yaml import CLoader as Loader
+    from yaml import CDumper as Dumper
+    sys.stderr.write("SWEET: using C yaml\n")
+except ImportError:
+    from yaml import Loader, Dumper
+    sys.stderr.write("WARNING: Could not use C yaml\n")
+
 class CongressLookup:
     '''A class used to lookup legislator properties from the github congress-legislators YAML database.'''
 
@@ -99,14 +107,14 @@ class CongressLookup:
     def database_load(self):
         try:
             with self.database_access('legislators-current.yaml') as y:
-                self.legislators = self.yaml_load(y, Loader=yaml.CLoader)
+                self.legislators = self.yaml_load(y, Loader=Loader)
             with self.database_access('legislators-district-offices.yaml') as y:
-                self.offices = self.yaml_load(y, Loader=yaml.CLoader)
+                self.offices = self.yaml_load(y, Loader=Loader)
             if self.args.committee is not None:
                 with self.database_access('committees-current.yaml') as y:
-                    self.committees = self.yaml_load(y, Loader=yaml.CLoader)
+                    self.committees = self.yaml_load(y, Loader=Loader)
                 with self.database_access('committee-membership-current.yaml') as y:
-                    self.membership = self.yaml_load(y, Loader=yaml.CLoader)
+                    self.membership = self.yaml_load(y, Loader=Loader)
             else:
                 self.committees = None
         except (BaseException,IOError) as e:
